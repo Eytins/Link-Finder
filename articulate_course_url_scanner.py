@@ -7,6 +7,7 @@ import time
 import requests
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor, as_completed
+import sys
 
 # Step 1: Set up Selenium
 options = webdriver.ChromeOptions()
@@ -216,10 +217,29 @@ def scan_course(course_url, depth=0, max_depth=2):
         print(f"{indent}Error scanning {course_url}: {e}")
 
 try:
-    # Step 2: Start scanning from the main course
-    main_url = "https://rise.articulate.com/share/dRLwd_Wtqs4StJOHb33qJeC_d4ZivRHc"
-    
+    # Step 2: Get URL from user input
     print("="*80)
+    print("Articulate Course URL Scanner")
+    print("="*80)
+    
+    # Check if URL was provided as command line argument
+    if len(sys.argv) > 1:
+        main_url = sys.argv[1]
+        print(f"Using URL from command line: {main_url}")
+    else:
+        # Prompt user for URL
+        main_url = input("\nPlease enter the Articulate Rise course URL: ").strip()
+    
+    # Validate URL
+    if not main_url:
+        print("Error: No URL provided. Exiting.")
+        sys.exit(1)
+    
+    if not main_url.startswith('http'):
+        print("Error: Invalid URL format. URL must start with http:// or https://")
+        sys.exit(1)
+    
+    print("\n" + "="*80)
     print("Starting recursive URL extraction...")
     print("="*80 + "\n")
     
